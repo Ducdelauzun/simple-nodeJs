@@ -10,8 +10,19 @@ const users = [
 ];
 app.use(express.json());
 
-app.get("/", (req, res) => {
-	res.json(users)
+app.get("/:id", (req, res) => {
+	const id = parseInt(req.params.id)
+
+	// trouve son index, verifier si le userIndex est positive
+	const userIndex = users.findIndex((user) => user.id === id)
+
+	// utilisateur non trouvé
+	if (userIndex < 0)
+		return res.status(404).json({ msg: "utilisateur non trouvé" })
+
+	// si el est trouvé
+
+	res.json(users[userIndex])
 })
 
 // POST : CRÉER un nouvel utilisateur, basé sur les données passées dans le corps(body) de la requête
@@ -37,15 +48,43 @@ app.post("/", (req, res) => {
 	res.status(201).json(newUser)
 })
 
-app.put("/", (req, res) => {
+app.put("/:id", (req, res) => {
+	const id = parseInt(req.params.id)
+
+	// trouve son index, verifier si le userIndex est positive
+	const userIndex = users.findIndex((user) => user.id === id)
+
+	// utilisateur non trouvé
+	if (userIndex < 0)
+		return res.status(404).json({ msg: "utilisateur non trouvé" })
+
+	// si el est trouvé, nous vérifions quelles valeurs ont été envoyées
+	const { firstName, lastName } = req.body
+
+	if (firstName) users[userIndex].firstName = firstName
+	if (lastName) users[userIndex].lastName = lastName
+
 	res.json({
-		msg: "hello rest api ici le put !!!",
+		msg: "utilisateur mis à jour",
+		user: users[userIndex],
 	})
 })
 
-app.delete("/", (req, res) => {
+app.delete("/:id", (req, res) => {
+	const id = parseInt(req.params.id)
+
+	// trouve son index, verifier si le userIndex est positive
+	const userIndex = users.findIndex((user) => user.id === id)
+
+	// utilisateur non trouvé
+	if (userIndex < 0)
+		return res.status(404).json({ msg: "utilisateur non trouvé" })
+
+	// si el est trouvé
+	users.splice(userIndex, 1)
+
 	res.json({
-		msg: "hello rest api ici le delete !!!",
+		msg: "utilisateur suprimée",
 	})
 })
 
