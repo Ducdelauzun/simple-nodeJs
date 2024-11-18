@@ -1,17 +1,16 @@
 const express = require("express")
 const router = express.Router()
+const { getAllUsers, createNewUser, updateUser, deleteUser } = require("../controllers/usersControllers")
 
 const db = require("../database")
 
-router.get("/users", (req, res) => {
-    db.all('SELECT * FROM users', [], (err, rows) => {
-        if (err) {
-          res.status(500).json({ error: err.message });
-        } else {
-          res.json(rows);
-        }
-      });
-    
-})
+// GET METHOD
+router.get("/users", getAllUsers)
+
+router.post("/users", createNewUser)
+
+router.put("/users/:id", updateUser)
+
+router.delete("/users/:id", deleteUser)
 
 module.exports = router
